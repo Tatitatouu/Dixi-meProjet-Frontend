@@ -1,23 +1,24 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import App from './App';
 
-//REDUX
-import { Provider } from "react-redux"
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from "./reducers/reducer"
-import { getPosts } from './actions/post.action';
+/**
+ * import { library } from '@fortawesome/fontawesome-svg-core';
+ * import { fab } from '@fortawesome/free-brands-svg-icons';
+ * import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
-const store = configureStore({
-  reducer : rootReducer,
-  devTools : true,
-});
+library.add(fab, faUserCircle)
+ */
 
-store.dispatch(getPosts());
+const container = document.getElementById('root');
+const root = createRoot(container);
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
-)
+root.render(
+  <BrowserRouter>
+    <Provider>
+      <App />
+    </Provider>
+  </BrowserRouter>
+);
