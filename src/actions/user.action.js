@@ -13,7 +13,7 @@ export const getProfile = createAsyncThunk("getProfile", async ({ token }) => {
 });
 
 export const updateProfile = createAsyncThunk("updateProfile", async ({ token, userName }) => {
-  const response = await axios.put('http://localhost:3001/api/v1/user/profile', {userName}, {
+  const response = await axios.put('http://localhost:3001/api/v1/user/profile', {userName: userName}, {
     headers: {
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'

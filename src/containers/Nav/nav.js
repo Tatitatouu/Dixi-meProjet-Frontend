@@ -1,4 +1,4 @@
-import logo from '../../data/nav.json';
+import logo from '../../assets/argentBankLogo.webp';
 
 import { Link } from 'react-router-dom';
 
@@ -35,7 +35,7 @@ export default function Nav() {
             // Si on n'échoue dans la récupération de l'utilisateur, cela signifie peut-être que le token est expiré ou invalide. 
             // Dans ce cas, on va rediriger vers la page de connexion. Avant cela, on va forcer une déconnexion (via handleLogout par exemple.)
         }
-    }, [token, userName])
+    },)
 
     return (
         <header>
@@ -43,7 +43,7 @@ export default function Nav() {
                 <Link to="/" className="main-nav-logo">
                     <img
                         className="main-nav-logo-image"
-                        src={logo.nav}
+                        src={logo}
                         alt="Argent Bank Logo"
                     />
                     <h1 className="sr-only">Argent Bank</h1>

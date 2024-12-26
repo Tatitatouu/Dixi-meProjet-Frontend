@@ -1,15 +1,15 @@
 import Footer from '../../components/Footer/footer';
-import Nav from '../../components/Navigation/navigation';
+import Hero from '../../components/Hero/hero';
+import Features from '../../components/Features/features';
 
 import './home.css';
 
 export default function Home() {
     return (
         <div>
-            <header>
-            <Nav />
-            </header>
             <main className='main'>
+                <Hero />
+                <Features />
             </main>
             <Footer />
         </div>    

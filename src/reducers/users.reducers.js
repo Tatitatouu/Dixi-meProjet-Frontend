@@ -1,4 +1,3 @@
-//Importation des utilitaires de Redux Toolkit et des actions asynchrones 
 import { createSlice } from "@reduxjs/toolkit";
 import { getProfile, updateProfile } from "../actions/user.action";
 
@@ -28,9 +27,11 @@ export const user = createSlice({
   extraReducers: (builder) => {
     // Gestion de de l'action de récupération de profil
     builder.addCase(getProfile.pending, (state, action) => initialState); // Lorsque la requête est en cours 
-    builder.addCase(getProfile.fulfilled, (state, action) => action.payload); // Lorsque la requête est réussie 
-    builder.addCase(getProfile.rejected, (state, action) => { // En cas d'erreur lors de la récupération du profil
-      console.error("Erreur lors de la récupération du profil de l'utilisateur.")
+    builder.addCase(getProfile.fulfilled, (state, action) => {
+      return {
+        ...state,
+        ...action.payload, 
+      }
     });
     // "" Pour updateProfile
     builder.addCase(updateProfile.pending, (state, action) => initialState); //""

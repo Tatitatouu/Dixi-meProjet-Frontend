@@ -1,9 +1,12 @@
+.bg-dark {
+    background-color: #12002b;
+}
+  
 .account {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: none;
-    border-radius: 3px;
+    border: 1px solid black;
     background-color: #fff;
     width: 80%;
     margin: 0 auto;

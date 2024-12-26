@@ -20,6 +20,7 @@ const slice = createSlice({
       state.token = null;
       state.isLogged = false;
       localStorage.removeItem("token");
+      state.userReducer.userName = "";
     },
   },
   extraReducers: (builder) => {
