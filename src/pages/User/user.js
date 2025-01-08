@@ -1,10 +1,8 @@
 import Account from "../../components/Account/accountCard";
 import Footer from '../../components/Footer/footer';
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { useNavigate } from "react-router-dom";
 
 import { updateProfile } from "../../actions/user.action";
 
@@ -15,8 +13,6 @@ import './user.css';
 export default function User() {
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const isLogged = useSelector(state => state.loginReducer.isLogged);
     const firstName = useSelector(state => state.userReducer.firstName)
     const lastName = useSelector(state => state.userReducer.lastName)
     const userName = useSelector(state => state.userReducer.userName)
@@ -52,7 +48,7 @@ export default function User() {
     function undo(){
         hide("edit")
     }
-    
+
     return (
         <div>
             <main className="user-main">

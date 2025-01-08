@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Bank Argent API
+  description: Documentation de l'API pour la gestion des utilisateurs et des transactions
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+servers:
+  - url: http://localhost:3001/api/v1
+paths:
+  /user/login:
+    post:
+      summary: Connexion de l'utilisateur
+      description: Permet à un utilisateur de se connecter à son compte.
+      tags:
+        - Utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Champs invalides
+        '500':
+          description: Erreur interne du serveur
+  /user/signup:
+    post:
+      summary: Inscription d'un utilisateur
+      description: Création d'un nouveau compte utilisateur.
+      tags:
+        - Utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSignup'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Champs invalides
+        '500':
+          description: Erreur interne du serveur
+  /user/profile:
+    get:
+      summary: Récupération du profil utilisateur
+      description: Permet de récupérer les informations du profil utilisateur.
+      tags:
+        - Utilisateur
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profil utilisateur récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '401':
+          description: Non autorisé
+        '500':
+          description: Erreur interne du serveur
+    put:
+      summary: Mise à jour du profil utilisateur
+      description: Permet de mettre à jour les informations du profil utilisateur.
+      tags:
+        - Utilisateur
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileUpdate'
+      responses:
+        '200':
+          description: Profil utilisateur mis à jour avec succès
+        '400':
+          description: Champs invalides
+        '401':
+          description: Non autorisé
+        '500':
+          description: Erreur interne du serveur
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginPayload:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Adresse e-mail de l'utilisateur
+        password:
+          type: string
+          description: Mot de passe de l'utilisateur
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Jeton d'authentification JWT
+    UserSignup:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+    UserProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    UserProfileUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
