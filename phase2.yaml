@@ -30,68 +30,81 @@ paths:
           description: Champs invalides
         '500':
           description: Erreur interne du serveur
-  /user/signup:
-    post:
-      summary: Inscription d'un utilisateur
-      description: Création d'un nouveau compte utilisateur.
-      tags:
-        - Utilisateur
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserSignup'
-      responses:
-        '201':
-          description: Utilisateur créé avec succès
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiResponse'
-        '400':
-          description: Champs invalides
-        '500':
-          description: Erreur interne du serveur
   /user/profile:
     get:
-      summary: Récupération du profil utilisateur
-      description: Permet de récupérer les informations du profil utilisateur.
+      summary: Profil utilisateur
+      description: Récupère les informations de profil de l'utilisateur connecté.
       tags:
         - Utilisateur
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: Profil utilisateur récupéré avec succès
+          description: Informations du profil récupérées
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserProfileResponse'
+                $ref: '#/components/schemas/UserProfile'
         '401':
           description: Non autorisé
         '500':
           description: Erreur interne du serveur
-    put:
-      summary: Mise à jour du profil utilisateur
-      description: Permet de mettre à jour les informations du profil utilisateur.
+  /account/{accountID}/transactions:
+    get:
       tags:
-        - Utilisateur
+        - Transactions
+      summary: Transactions associées à un compte
+      description: Récupère toutes les transactions liées à un compte spécifique.
+      parameters:
+        - name: accountID
+          in: path
+          required: true
+          description: ID du compte
+          schema:
+            type: string
       security:
         - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserProfileUpdate'
       responses:
         '200':
-          description: Profil utilisateur mis à jour avec succès
-        '400':
-          description: Champs invalides
+          description: Transactions récupérées avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionResponse'
         '401':
           description: Non autorisé
+        '404':
+          description: Compte introuvable
+        '500':
+          description: Erreur interne du serveur
+  /account/{accountID}/balance:
+    get:
+      tags:
+        - Comptes
+      summary: Solde du compte
+      description: Récupère le solde actuel du compte spécifié.
+      parameters:
+        - name: accountID
+          in: path
+          required: true
+          description: ID du compte
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Solde récupéré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+        '401':
+          description: Non autorisé
+        '404':
+          description: Compte introuvable
         '500':
           description: Erreur interne du serveur
 components:
@@ -116,39 +129,55 @@ components:
         token:
           type: string
           description: Jeton d'authentification JWT
-    UserSignup:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-        password:
-          type: string
-    ApiResponse:
-      type: object
-      properties:
-        status:
-          type: integer
-        message:
-          type: string
-    UserProfileResponse:
+    UserProfile:
       type: object
       properties:
         id:
           type: string
+          description: ID unique de l'utilisateur
+        name:
+          type: string
+          description: Nom complet de l'utilisateur
         email:
           type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-    UserProfileUpdate:
+          description: Adresse e-mail de l'utilisateur
+    AccountBalance:
       type: object
       properties:
-        firstName:
+        accountID:
           type: string
-        lastName:
+          description: ID du compte
+        balance:
+          type: number
+          format: double
+          description: Solde actuel du compte
+    TransactionResponse:
+      type: object
+      properties:
+        transactionID:
           type: string
+          description: ID de la transaction
+        transactionType:
+          type: string
+          description: Type de la transaction (crédit ou débit)
+        date:
+          type: string
+          format: date-time
+          description: Date de la transaction
+        description:
+          type: string
+          description: Description de la transaction
+        amount:
+          type: number
+          format: double
+          description: Montant de la transaction
+        balance:
+          type: number
+          format: double
+          description: Solde après la transaction
+        category:
+          type: string
+          description: Catégorie de la transaction
+        note:
+          type: string
+          description: Note associée à la transaction
