@@ -7,61 +7,12 @@ info:
 servers:
   - url: http://localhost:3001/api/v1
 paths:
-  /user/login:
-    post:
-      summary: Connexion de l'utilisateur
-      description: Permet à un utilisateur de se connecter à son compte.
-      tags:
-        - Utilisateur
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginPayload'
-      responses:
-        '200':
-          description: Connexion réussie
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginResponse'
-        '400':
-          description: Champs invalides
-        '500':
-          description: Erreur interne du serveur
-  /user/profile:
+  /transactions/current-month:
     get:
-      summary: Profil utilisateur
-      description: Récupère les informations de profil de l'utilisateur connecté.
-      tags:
-        - Utilisateur
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: Informations du profil récupérées
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserProfile'
-        '401':
-          description: Non autorisé
-        '500':
-          description: Erreur interne du serveur
-  /account/{accountID}/transactions:
-    get:
+      summary: Transactions du mois en cours
+      description: Récupère toutes les transactions du mois en cours, groupées par compte.
       tags:
         - Transactions
-      summary: Transactions associées à un compte
-      description: Récupère toutes les transactions liées à un compte spécifique.
-      parameters:
-        - name: accountID
-          in: path
-          required: true
-          description: ID du compte
-          schema:
-            type: string
       security:
         - BearerAuth: []
       responses:
@@ -70,43 +21,91 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TransactionResponse'
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TransactionResponse'
         '401':
           description: Non autorisé
-        '404':
-          description: Compte introuvable
         '500':
           description: Erreur interne du serveur
-  /account/{accountID}/balance:
+
+  /transaction/{transactionID}:
     get:
+      summary: Détails d'une transaction
+      description: Récupère les détails d'une transaction spécifique à partir de son ID.
       tags:
-        - Comptes
-      summary: Solde du compte
-      description: Récupère le solde actuel du compte spécifié.
+        - Transactions
       parameters:
-        - name: accountID
+        - name: transactionID
           in: path
           required: true
-          description: ID du compte
+          description: ID de la transaction
           schema:
             type: string
       security:
         - BearerAuth: []
       responses:
         '200':
-          description: Solde récupéré avec succès
+          description: Détails de la transaction récupérés avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountBalance'
+                $ref: '#/components/schemas/TransactionResponse'
         '401':
           description: Non autorisé
         '404':
-          description: Compte introuvable
+          description: Transaction introuvable
         '500':
           description: Erreur interne du serveur
+
+    patch:
+      summary: Modifier une transaction
+      description: Permet de modifier les informations d'une transaction spécifique.
+      tags:
+        - Transactions
+      parameters:
+        - name: transactionID
+          in: path
+          required: true
+          description: ID de la transaction
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Nouvelle description de la transaction
+                category:
+                  type: string
+                  description: Nouvelle catégorie de la transaction
+                note:
+                  type: string
+                  description: Nouvelle note associée à la transaction
+      responses:
+        '200':
+          description: Transaction modifiée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: Données invalides
+        '401':
+          description: Non autorisé
+        '404':
+          description: Transaction introuvable
+        '500':
+          description: Erreur interne du serveur
+
 components:
   securitySchemes:
     BearerAuth:
@@ -141,16 +140,6 @@ components:
         email:
           type: string
           description: Adresse e-mail de l'utilisateur
-    AccountBalance:
-      type: object
-      properties:
-        accountID:
-          type: string
-          description: ID du compte
-        balance:
-          type: number
-          format: double
-          description: Solde actuel du compte
     TransactionResponse:
       type: object
       properties:
